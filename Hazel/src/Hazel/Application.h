@@ -1,6 +1,12 @@
 #pragma once
 
-#include "Core.h"
+#include "Hazel/Core.h"
+#include "Hazel/Events/Event.h"
+#include "Hazel/Events/ApplicationEvent.h"
+#include "Hazel/Window.h"
+#include "Hazel/Layer.h"
+#include "Hazel/LayerStack.h"
+
 
 namespace Hazel
 {
@@ -17,9 +23,25 @@ namespace Hazel
 		// 主运行函数，应用程序的核心逻辑在此运行
 		void Run();
 
+		void OnEvent(Event& e);
+
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
+
+		inline Window& GetWindow() { return *m_Window; }
+		inline static Application& Get() { return *s_Instance; }
+
+	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+
 	private:
 		// 表示应用程序是否正在运行的状态变量
 		bool m_Running = true;
+		std::unique_ptr<Window> m_Window;
+		LayerStack m_LayerStack;
+
+	private: 
+		static Application* s_Instance;
 	};
 
 	// 由客户端（引擎用户）定义的函数，用于创建具体的应用程序实例

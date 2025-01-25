@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.15)
+
+# 项目名称和版本
+project(HazelEngine VERSION 1.0 LANGUAGES CXX)
+
+# 设置全局编译选项
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# 输出路径设置
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+# 定义输出路径: Debug-Windows-x64
+set(OUTPUT_DIR "${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+
+# 添加子目录
+add_subdirectory(Hazel)
+add_subdirectory(SandBox)
