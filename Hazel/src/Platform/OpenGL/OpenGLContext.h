@@ -1,6 +1,7 @@
 #pragma once
 #include "Hazel/Core.h"
-#include "Hazel/GraphicsContext.h"
+#include "Hazel/Log.h"
+#include "Hazel/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;
 
