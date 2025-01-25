@@ -1,7 +1,7 @@
 project "Glad"
 	kind "StaticLib"
 	language "C"
-	staticruntime "off"
+	staticruntime "on"
 
 	targetdir("bin/" .. outputdir .. "/%{prj.name}")  -- 输出文件目录
 	objdir("bin-int/" .. outputdir .. "/%{prj.name}") -- 中间文件目录

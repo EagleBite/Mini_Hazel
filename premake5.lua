@@ -6,7 +6,7 @@ workspace "Hazel"
 		"Dist"
 	}
 
-	startproject "SandBox"
+	startproject "SandBox" -- 设置启动项目
 
 
 -- 输出路径:Debug-windows-x64
@@ -26,15 +26,16 @@ include "Hazel/vendor/imgui"
 
 project "Hazel"
 	location "Hazel"
-	kind "SharedLib"
+	kind "StaticLib"--静态库lib
 	language "C++"
-
-	targetdir("bin/" .. outputdir .. "/%{prj.name}")
-	objdir("bin-int/" .. outputdir .. "/%{prj.name}")
+	cppdialect "C++17"
 
 	-- On:代码生成的运行库选项是MTD,静态链接MSVCRT.lib库;
 	-- Off:代码生成的运行库选项是MDD,动态链接MSVCRT.dll库;打包后的exe放到另一台电脑上若无这个dll会报错
-	staticruntime "Off"	
+	staticruntime "on"	
+
+	targetdir("bin/" .. outputdir .. "/%{prj.name}")
+	objdir("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "pch.h"
 	pchsource "Hazel/src/pch.cpp"
@@ -44,6 +45,10 @@ project "Hazel"
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
+	}
+
+	defines{
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	includedirs {
@@ -63,7 +68,6 @@ project "Hazel"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
 
@@ -74,10 +78,10 @@ project "Hazel"
 			"GLFW_INCLUDE_NONE" -- 让GLFW不包含OpenGL
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/SandBox")	
-		}
+		-- postbuildcommands
+		-- {
+		--    ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/SandBox")	
+		-- }
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
@@ -99,11 +103,11 @@ project "SandBox"
 	location "SandBox"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"	
 
 	targetdir("bin/" .. outputdir .. "/%{prj.name}")
 	objdir("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	staticruntime "Off"
 
 	files 
 	{
@@ -113,8 +117,8 @@ project "SandBox"
 
 	includedirs {
 		"Hazel/src",
+		"Hazel/vendor",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}"
 	}
 
@@ -123,13 +127,16 @@ project "SandBox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
 
 		defines {
 			"HZ_PLATFORM_WINDOWS"
 		}
+
+	 -- 针对 Visual Studio 禁用警告 C4828
+    filter { "action:vs*" }
+        buildoptions { "/wd4828" }  -- 添加禁用特定警告的选项
 
 	-- 不同配置下的预定义不同
 	filter "configurations:Debug"

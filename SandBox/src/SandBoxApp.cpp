@@ -43,7 +43,6 @@ public:
 	SandBoxApplication()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Hazel::ImGuiLayer());
 	}
 	~SandBoxApplication()
 	{

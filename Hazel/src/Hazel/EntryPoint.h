@@ -7,7 +7,7 @@
 extern Hazel::Application* Hazel::CreateApplication();
 
 int main(int argc, char** argv)
-{
+ {
 	// 初始化日志系统
 	Hazel::Log::Init();
 	HZ_CORE_INFO("Logger initialized");

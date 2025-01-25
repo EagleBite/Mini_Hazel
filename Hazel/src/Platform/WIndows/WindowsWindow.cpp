@@ -6,6 +6,8 @@
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 
+#include "Platform/OpenGL/OpenGLContext.h"
+
 namespace Hazel
 {
 	static bool s_GLFEInitialized = false;
@@ -22,6 +24,16 @@ namespace Hazel
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		Init(props);
+	}
+
+	WindowsWindow::~WindowsWindow()
+	{
+		Shutdown();
+	}
+
+	void WindowsWindow::Init(const WindowProps& props)
+	{
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -36,10 +48,9 @@ namespace Hazel
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);            // 设置glfw当前的上下文
-
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		HZ_CORE_ASSERT(status, "Failed to initialize Glad! Ensure that the OpenGL context is created before initializing Glad.");
+		// 创建渲染上下Context对象
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data); // 设置窗口关联的用户数据指针
 		SetVSync(true);
@@ -137,15 +148,6 @@ namespace Hazel
 
 	}
 
-	WindowsWindow::~WindowsWindow()
-	{
-		Shutdown();
-	}
-	void WindowsWindow::Init(const WindowProps& props)
-	{
-
-	}
-
 	void WindowsWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
@@ -154,7 +156,7 @@ namespace Hazel
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();           // 轮询事件
-		glfwSwapBuffers(m_Window);  // 交换缓冲
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enable)

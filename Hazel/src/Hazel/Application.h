@@ -41,6 +41,11 @@ namespace Hazel
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 
+	private:
+		unsigned int m_VertexArray;
+		unsigned int m_VertexBuffer;
+		unsigned int m_IndexBuffer;
+
 	private: 
 		static Application* s_Instance;
 	};
