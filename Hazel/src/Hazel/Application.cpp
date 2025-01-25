@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Hazel/Application.h"
 #include "Hazel/Events/ApplicationEvent.h"
+#include "Hazel/Input.h"
 #include "Hazel/Log.h"
 #include <glad/glad.h>
 
@@ -16,6 +17,10 @@ namespace Hazel
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
+
 	}
 
 	Application::~Application()
@@ -56,8 +61,10 @@ namespace Hazel
 			glClearColor(1,0,1,1);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
+			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}

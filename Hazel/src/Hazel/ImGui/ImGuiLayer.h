@@ -21,6 +21,10 @@ namespace Hazel
 		virtual void OnUpdate() override;
 		virtual void OnEvent(Event& event) override;
 
+		void Begin();
+		void End();
+		virtual void OnImGuiRender() override;
+
 	private:
 		bool OnMousePressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseReleasedEvent(MouseButtonReleasedEvent& e);
