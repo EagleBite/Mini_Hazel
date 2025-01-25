@@ -13,8 +13,12 @@ namespace Hazel
 
 		virtual void Bind() const override;
 		virtual void UnBind() const override;
+		virtual void SetLayout(const BufferLayout& layout) override;
+		virtual BufferLayout GetLayout() const override;
+
 	private:
 		uint32_t m_RendererID;
+		BufferLayout m_BufferLayout;
 	};
 
 	class OpenGLIndexBuffer :public IndexBuffer

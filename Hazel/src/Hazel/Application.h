@@ -9,6 +9,7 @@
 #include "Hazel/ImGui/ImGuiLayer.h"
 #include "Hazel/Renderer/Shader.h"
 #include "Hazel/Renderer/Buffer.h"
+#include "Hazel/Renderer/VertexArray.h"
 
 namespace Hazel
 {
@@ -44,9 +45,7 @@ namespace Hazel
 		ImGuiLayer* m_ImGuiLayer;
 
 	private:
-		unsigned int m_VertexArray;
-		std::unique_ptr<VertexBuffer> m_VertexBuffer;
-		std::unique_ptr<IndexBuffer> m_IndexBuffer;
+		std::unique_ptr<VertexArray> m_VertexArray;
 		std::unique_ptr<Shader> m_Shader;
 
 	private: 
