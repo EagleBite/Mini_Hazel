@@ -14,7 +14,7 @@ namespace Hazel
 	public:
 		static void BeginScene(OrthoGraphicsCamera& camera);
 		static void EndScene();
-		static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray);
+		static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, glm::mat4 transform = glm::mat4(1.0f));
 
 		inline static void SetAPI(RendererAPI::API api) { RendererAPI::SetAPI(api); }
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }

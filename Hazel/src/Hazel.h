@@ -4,6 +4,7 @@
 #include "Hazel/Application.h"
 #include "Hazel/Log.h"
 #include "Hazel/Events/Event.h"
+#include "Hazel/Core/TimeStep.h"
 
 #include "Hazel/Layer.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
