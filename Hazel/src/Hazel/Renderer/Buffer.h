@@ -5,7 +5,7 @@
 
 namespace Hazel
 {
-
+	// 着色器数据类型
 	enum class ShaderDataType
 	{
 		None = 0,
@@ -41,7 +41,8 @@ namespace Hazel
 		uint32_t Offset;
 		bool Normalized;
 
-		BufferElement() {}
+		BufferElement()
+			: Type(ShaderDataType::None), Name("None"), Size(0), Offset(0), Normalized(false) {}
 		BufferElement(ShaderDataType type, const std::string name, bool normalized = false)
 			: Type(type), Name(name), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) { }
 
@@ -102,7 +103,8 @@ namespace Hazel
 		std::vector<BufferElement> m_Elements;
 		uint32_t m_Stride = 0;
 	};
-
+	
+	// 顶点缓冲
 	class VertexBuffer
 	{
 	public:
@@ -114,7 +116,7 @@ namespace Hazel
 			 
 		static VertexBuffer* Create(float* vertices, uint32_t size);
 	};
-
+	// 索引缓冲
 	class IndexBuffer
 	{
 	public:

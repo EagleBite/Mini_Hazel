@@ -2,7 +2,7 @@
 
 namespace Hazel
 {
-
+	// 图形上下文Context
 	class GraphicsContext
 	{
 	public:

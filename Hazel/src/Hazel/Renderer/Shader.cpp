@@ -7,65 +7,7 @@ namespace Hazel
 	
 	Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
 	{
-		// 顶点着色器
-		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		const GLchar* source = vertexSrc.c_str();
-		glShaderSource(vertexShader, 1, &source, 0);
-		glCompileShader(vertexShader);
-		GLint isCompiled = 0;
-		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE)
-		{
-			GLint maxLength = 0;
-			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-			glDeleteShader(vertexShader);
-			HZ_CORE_ERROR("{0}", infoLog.data());
-			HZ_CORE_ASSERT(false, "顶点着色器编译失败");
-			return;
-		}
-		// 片段着色器
-		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		source = fragmentSrc.c_str();
-		glShaderSource(fragmentShader, 1, &source, 0);
-		glCompileShader(fragmentShader);
-		isCompiled = 0;
-		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE)
-		{
-			GLint maxLength = 0;
-			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-			glDeleteShader(fragmentShader);
-			HZ_CORE_ERROR("{0}", infoLog.data());
-			HZ_CORE_ASSERT(false, "片段着色器编译失败");
-			return;
-		}
-		// 着色器程序
-		m_RendererID = glCreateProgram();
-		GLuint program = m_RendererID;
-		glAttachShader(program, vertexShader);
-		glAttachShader(program, fragmentShader);
-		glLinkProgram(program);
-		GLint isLinked = 0;
-		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-		if (isLinked == GL_FALSE) {
-			GLint maxLength = 0;
-			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-			glDeleteProgram(program);
-			glDeleteShader(vertexShader);
-			glDeleteShader(fragmentShader);
-			HZ_CORE_ERROR("{0}", infoLog.data());
-			HZ_CORE_ASSERT(false, "着色器程序连接失败");
-			return;
-		}
-		// 删除着色器对象
-		glDetachShader(program, vertexShader);
-		glDetachShader(program, fragmentShader);
+		m_RendererID = CreateShader(vertexSrc, fragmentSrc);
 	}
 
 	Shader::~Shader()
@@ -82,5 +24,97 @@ namespace Hazel
 	{
 		glUseProgram(0);
 	}
+
+	void Shader::UploadUniform1f(const std::string& name, float value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1f(location, value);
+	}
+
+	void Shader::UploadUniform1i(const std::string& name, int value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1i(location, value);
+	}
+
+	void Shader::UploadUniform2f(const std::string& name, const glm::vec2& value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform2fv(location, 1, glm::value_ptr(value));
+	}
+
+	void Shader::UploadUniform3f(const std::string& name, const glm::vec3& value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform3fv(location, 1, glm::value_ptr(value));
+	}
+
+	void Shader::UploadUniform4f(const std::string& name, const glm::vec4& value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform4fv(location, 1, glm::value_ptr(value));
+	}
+
+	void Shader::UPloadUniformMat3(const std::string& name, const glm::mat3& value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void Shader::UploadUniformMat4(const std::string& name, const glm::mat4& value)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	uint32_t Shader::CreateShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+	{
+		uint32_t program = glCreateProgram();
+		uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSrc);
+		uint32_t fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSrc);
+
+		glAttachShader(program, vertexShader);
+		glAttachShader(program, fragmentShader);
+		glLinkProgram(program);
+		glValidateProgram(program);
+
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+
+		return program;
+	}
+
+	uint32_t Shader::CompileShader(unsigned int type, const std::string& source)
+	{
+		uint32_t shader = glCreateShader(type);
+		const char* src = source.c_str();
+		glShaderSource(shader, 1, &src, nullptr);
+		glCompileShader(shader);
+
+		// 检查编译错误
+		GLint isCompiled = 0;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+		if (isCompiled == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+			std::vector<GLchar> infoLog(maxLength);
+			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+			glDeleteShader(shader);
+			HZ_CORE_ERROR("{0}", infoLog.data());
+			HZ_CORE_ASSERT(false, "着色器编译失败");
+			return 0;
+		}
+
+		return shader;
+	}
+
+	int Shader::GetUniformLocation(const std::string& name) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		HZ_CORE_ASSERT(location != -1, "Uniform '{0}' not found!", name); 
+		return location;
+	}
+
 
 }
