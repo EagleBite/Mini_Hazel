@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef HZ_PLATFORM_WINDOWS
 	#if HZ_DYNAMIC_LINK
 		#ifdef HZ_BUILD_DLL
@@ -25,3 +27,18 @@
 #define BIT(x) 1 << x
 
 #define HZ_BIND_EVENT_FN(fun) std::bind(&fun, this, std::placeholders::_1)
+
+namespace Hazel
+{
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+	template<typename T, typename... Args>
+	inline std::shared_ptr<T> CreateRef(Args&&... args)
+	{
+		return std::make_shared<T>(std::forward<Args>(args)...); // 完美转发参数包
+	}
+}

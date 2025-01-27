@@ -1,115 +1,108 @@
 #include "Hazel.h"
 #include "imgui/imgui.h"
+#include "Platform/OpenGL/OpenGLShader.h"
 
 class ExampleLayer : public Hazel::Layer
 {
 public:
 	ExampleLayer() : 
-		Layer("ExampleLayer"),
-		m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), 
-		m_CameraPosition(0.0f)
+		Layer("ExampleLayer"), m_CameraController(1280.f / 720.f)
 	{
 		// 绘制三角形
-		float vertices[3 * 7] = {
+		float triangleVertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
 			0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
 			0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
-		unsigned int indices[3] = { 0,1,2 };
-		Hazel::BufferLayout layout = {
+		unsigned int triangleIndices[3] = { 0,1,2 };
+		Hazel::BufferLayout layout1 = {
 			{ Hazel::ShaderDataType::Float3, "a_Position" },
 			{ Hazel::ShaderDataType::Float4, "a_Color" }
 		};
-		std::shared_ptr<Hazel::VertexBuffer> vertexBuffer; // 创建VB
-		std::shared_ptr<Hazel::IndexBuffer> indexBuffer;   // 创建EB
-		m_VertexArray.reset(Hazel::VertexArray::Create()); // 创建VA
-		vertexBuffer.reset(Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
-		indexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-		vertexBuffer->SetLayout(layout);              // 先设置Layout
-		m_VertexArray->AddVertexBuffer(vertexBuffer); // 后添加VertexBuffer
-		m_VertexArray->SetIndexBuffer(indexBuffer);
+		m_TriangleVertexArray = Hazel::VertexArray::Create();
+		Hazel::Ref<Hazel::VertexBuffer> vertexBuffer = Hazel::VertexBuffer::Create(triangleVertices, sizeof(triangleVertices));
+		Hazel::Ref<Hazel::IndexBuffer> indexBuffer = Hazel::IndexBuffer::Create(triangleIndices, sizeof(triangleIndices) / sizeof(uint32_t));
+		vertexBuffer->SetLayout(layout1);              // 先设置Layout
+		m_TriangleVertexArray->AddVertexBuffer(vertexBuffer); // 后添加VertexBuffer
+		m_TriangleVertexArray->SetIndexBuffer(indexBuffer);
+		
+		// 绘制长方形
+		float squareVertices[4 * 5] = {
+			-0.75f, -0.75f, 0.0f, 0.0f, 0.0f,
+			0.75f, -0.75f, 0.0f, 1.0f, 0.0f,
+			0.75f, 0.75f, 0.0f, 1.0f, 1.0f,
+			-0.75f, 0.75f, 0.0f, 0.0f, 1.0f
+		};
+		unsigned int squareIndice[6] = { 0,1,2,2,3,0 };
+		Hazel::BufferLayout layout2 = {
+			{Hazel::ShaderDataType::Float3, "a_Position"},
+			{Hazel::ShaderDataType::Float2, "a_TexCoord"}
+		};
+		m_SquareVertexArray = Hazel::VertexArray::Create();
+		Hazel::Ref<Hazel::VertexBuffer> squareVB = Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
+		Hazel::Ref<Hazel::IndexBuffer> squareEB = Hazel::IndexBuffer::Create(squareIndice, sizeof(squareIndice) / sizeof(uint32_t));
+		squareVB->SetLayout(layout2);
+		m_SquareVertexArray->AddVertexBuffer(squareVB);
+		m_SquareVertexArray->SetIndexBuffer(squareEB);
 
-		// 着色器代码
-		std::string vertexSrc = R"(
-			#version 330 core
+		// Shaders
+		m_SimpleShader = Hazel::Shader::Create("assets/shaders/SimpleShader.glsl");
+		m_SimpleTextureShader = Hazel::Shader::Create("assets/shaders/SimpleTextureShader.glsl");
+		m_SimpleColorShader = Hazel::Shader::Create("assets/shaders/SimpleColorShader.glsl");
 
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
-			out vec3 v_Position;
-			out vec4 v_Color;
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-			void main()
-			{
-				v_Position = a_Position;
-				v_Color = a_Color;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-		)";
-		std::string fragmentSrc = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 color;
-			in vec3 v_Position;
-			in vec4 v_Color;
-			void main()
-			{
-				color = v_Color;
-			}
-		)";
-		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
+		// Textures
+		m_Texture = Hazel::Texture2D::Create("assets/textures/Brick_159S.jpg");
+		m_Texture->Bind(0);
+		
 	}
 	void OnUpdate(Hazel::Timestep ts) override 
 	{
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_UP)) {
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN)) {
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-		}
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT)) {
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT)) {
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-		}
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_A)) {
-			m_CameraRotation += m_CameraRotationSpeed * ts;
-		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D)) {
-			m_CameraRotation -= m_CameraRotationSpeed * ts;
-		}
+		m_CameraController.OnUpdate(ts);
 
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		Hazel::RenderCommand::Clear();
 
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
-		Hazel::Renderer::BeginScene(m_Camera);
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
+
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_SimpleColorShader)->UploadUniform4f("u_Color", m_SquareColor);
+		// 绘制一组正方形
+		static glm::mat4 scale = glm::scale(glm::mat4(1.0f), { 0.05f, 0.05f, 0.05f });
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 20; j++) {
+				glm::mat4 smallsqtransfrom = glm::translate(glm::mat4(1.0f), { i * 0.08f, j * 0.08f, 0.0f }) * scale;
+				Hazel::Renderer::Submit(m_SimpleColorShader, m_SquareVertexArray, smallsqtransfrom);
+			}
+		}
+
+		Hazel::Renderer::Submit(m_SimpleTextureShader, m_SquareVertexArray); // 绘制正方形
+		Hazel::Renderer::Submit(m_SimpleShader, m_TriangleVertexArray);
 		Hazel::Renderer::EndScene();
 	}
 
 	void OnEvent(Hazel::Event& event) override
 	{
-
+		m_CameraController.OnEvent(event);
 	}
 
 	void OnImGuiRender() override
 	{
 		ImGui::Begin("Settings");
+		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 		ImGui::End();
 	}
 private:
-	std::shared_ptr<Hazel::VertexArray> m_VertexArray;
-	std::shared_ptr<Hazel::Shader> m_Shader;
+	Hazel::Ref<Hazel::VertexArray> m_TriangleVertexArray;
+	Hazel::Ref<Hazel::VertexArray> m_SquareVertexArray;
 
-	Hazel::OrthoGraphicsCamera m_Camera;
-	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 0.5f;
-	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 30.0f;
+	Hazel::Ref<Hazel::Shader> m_SimpleColorShader;
+	Hazel::Ref<Hazel::Shader> m_SimpleTextureShader;
+	Hazel::Ref<Hazel::Shader> m_SimpleShader;
 
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
+
+	glm::vec4 m_SquareColor = glm::vec4(1, 0, 0, 1);
+
+	Hazel::OrthographicsCameraController m_CameraController;
 };
 
 class SandBoxApplication : public Hazel::Application

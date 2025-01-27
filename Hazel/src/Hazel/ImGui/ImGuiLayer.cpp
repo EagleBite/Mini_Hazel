@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "Hazel/Core.h"
-#include "Hazel/Application.h"
+#include "Hazel/Core/Core.h"
+#include "Hazel/Core/Application.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
 
 #include "imgui.h"

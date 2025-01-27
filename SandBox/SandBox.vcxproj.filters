@@ -19,4 +19,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\SimpleTextureShader.glsl" />
+    <None Include="assets\shaders\SimpleColorShader.glsl" />
+    <None Include="assets\shaders\SimpleShader.glsl" />
+  </ItemGroup>
 </Project>

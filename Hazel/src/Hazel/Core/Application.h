@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Hazel/Core.h"
+#include "Hazel/Core/Core.h"
+#include "Hazel/Core/Window.h"
+#include "Hazel/Core/LayerStack.h"
 #include "Hazel/Events/Event.h"
 #include "Hazel/Events/ApplicationEvent.h"
-#include "Hazel/Window.h"
-#include "Hazel/LayerStack.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
 
 namespace Hazel
 {
 	// 定义一个应用程序类，这是引擎的核心部分，负责管理应用程序的生命周期
-	class HAZEL_API Application
+	class Application
 	{
 	public:
 
@@ -30,9 +30,11 @@ namespace Hazel
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
 		bool m_Running = true;
+		bool m_Minimized = false;
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;

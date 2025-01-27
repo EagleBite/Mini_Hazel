@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "Hazel/LayerStack.h"
-#include "Hazel/Log.h"
+#include "Hazel/Core/LayerStack.h"
+#include "Hazel/Core/Log.h"
 
 namespace Hazel
 {

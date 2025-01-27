@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Hazel/Core.h"
+#include "Hazel/Core/Core.h"
 #include "Hazel/Renderer/VertexArray.h"
 #include "Hazel/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
@@ -7,7 +7,7 @@
 namespace Hazel
 {
 
-	VertexArray* VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -18,7 +18,7 @@ namespace Hazel
 		}
 		case RendererAPI::API::OpenGL:
 		{
-			return new OpenGLVertexArray();
+			return CreateRef<OpenGLVertexArray>();
 		}
 		}
 

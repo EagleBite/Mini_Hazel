@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pch.h"
-#include "Hazel/Core.h"
+#include "Hazel/Core/Core.h"
 
 namespace Hazel
 {
@@ -114,7 +114,7 @@ namespace Hazel
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 		virtual BufferLayout GetLayout() const = 0;
 			 
-		static VertexBuffer* Create(float* vertices, uint32_t size);
+		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 	// Ë÷Òý»º³å
 	class IndexBuffer
@@ -124,7 +124,7 @@ namespace Hazel
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
 		virtual inline uint32_t GetCount() const = 0;
-		static IndexBuffer* Create(uint32_t* indices, uint32_t count);
+		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 	};
 
 } // namespace Hazel
