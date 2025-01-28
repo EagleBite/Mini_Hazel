@@ -18,10 +18,16 @@
     <ClCompile Include="src\SandBoxApp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\SandBox2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\SimpleTextureShader.glsl" />
-    <None Include="assets\shaders\SimpleColorShader.glsl" />
-    <None Include="assets\shaders\SimpleShader.glsl" />
+    <ClInclude Include="src\SandBox2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\SimpleColorTextureShader.glsl" />
   </ItemGroup>
 </Project>

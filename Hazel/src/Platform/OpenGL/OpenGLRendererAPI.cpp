@@ -21,10 +21,13 @@ namespace Hazel
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& VertexArray)
+	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& VertexArray, const uint32_t indexCount)
 	{
 		// 按照顶点数组的索引缓冲进行绘制
-		glDrawElements(GL_TRIANGLES, VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		VertexArray->Bind(); // 避免忘记绑定
+		uint32_t count = indexCount ? VertexArray->GetIndexBuffer()->GetCount() : indexCount;
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void OpenGLRendererAPI::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)

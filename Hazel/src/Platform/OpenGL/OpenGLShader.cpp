@@ -69,6 +69,46 @@ namespace Hazel
 		glUseProgram(0);
 	}
 
+	void OpenGLShader::SetTextureSlot(std::string textureName, uint32_t slot)
+	{
+		UploadUniform1i(textureName, slot);
+	}
+
+	void OpenGLShader::SetInt(std::string name, uint32_t value)
+	{
+		UploadUniform1i(name, value);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, float value)
+	{
+		UploadUniform1f(name, value);
+	}
+
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		UploadUniform2f(name, value);
+	}
+
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	{
+		UploadUniform3f(name, value);
+	}
+
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+	{
+		UploadUniform4f(name, value);
+	}
+
+	void OpenGLShader::SetMat3(std::string name, glm::mat3 value)
+	{
+		UploadUniformMat3(name, value);
+	}
+
+	void OpenGLShader::SetMat4(std::string name, glm::mat4 value)
+	{
+		UploadUniformMat4(name, value);
+	}
+
 	void OpenGLShader::UploadUniform1f(const std::string& name, float value)
 	{
 		glUseProgram(m_RendererID); // Œ™¡À±‹√‚∞Û∂®
