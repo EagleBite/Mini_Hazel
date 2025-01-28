@@ -18,6 +18,7 @@ namespace Hazel
 
 		virtual void SetTextureSlot(std::string textureName, uint32_t slot) = 0;
 		virtual void SetInt(std::string name, uint32_t value) = 0;
+		virtual void SetIntArray(const std::string& name,const int* value, const uint32_t count) = 0;
 		virtual void SetFloat(const std::string& name, float value) = 0;
 		virtual void SetFloat2(const std::string& name, const glm::vec2& value) = 0;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& value) = 0;

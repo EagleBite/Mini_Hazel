@@ -26,10 +26,10 @@ namespace Hazel
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D)) {
 			m_CameraPosition.x += m_CameraMoveSpeed * ts;
 		}
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_Q)) {
+		if (Hazel::Input::IsKeyPressed(HZ_KEY_E)) {
 			m_CameraRotation += m_CameraRotationSpeed * ts;
 		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_E)) {
+		else if (Hazel::Input::IsKeyPressed(HZ_KEY_Q)) {
 			m_CameraRotation -= m_CameraRotationSpeed * ts;
 		}
 

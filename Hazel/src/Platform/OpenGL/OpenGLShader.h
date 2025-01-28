@@ -21,6 +21,7 @@ namespace Hazel
 
 		virtual void SetTextureSlot(std::string textureName, uint32_t slot) override;
 		virtual void SetInt(std::string name, uint32_t value) override;
+		virtual void SetIntArray(const std::string& name, const int* value, const uint32_t count) override;
 		virtual void SetFloat(const std::string& name, float value) override;
 		virtual void SetFloat2(const std::string& name, const glm::vec2& value) override;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& value) override;
@@ -37,6 +38,7 @@ namespace Hazel
 		void UploadUniform4f(const std::string& name, const glm::vec4& value);   // 上传vec4
 		void UploadUniformMat3(const std::string& name, const glm::mat3& value); // 上传mat3
 		void UploadUniformMat4(const std::string& name, const glm::mat4& value); // 上传mat4
+		void UploadUniformIntArray(const std::string& name, const int* value, const uint32_t count);
 
 	private:
 		uint32_t CreateShader(const std::unordered_map<GLenum, std::string>& shaderSources);

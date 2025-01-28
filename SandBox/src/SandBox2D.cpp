@@ -10,7 +10,7 @@ SandBox2D::SandBox2D()
 void SandBox2D::OnAttach()
 {
 	Hazel::Renderer2D::Init();
-	m_Texture = Hazel::Texture2D::Create("assets/textures/Brick_159S.jpg");
+	m_Texture = Hazel::Texture2D::Create("assets/textures/directions.png");
 }
 
 void SandBox2D::OnDetach()
@@ -26,8 +26,8 @@ void SandBox2D::OnUpdate(Hazel::Timestep ts)
 	Hazel::RenderCommand::Clear();
 
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, m_Color);
-	//Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f }, { 0.8f,0.8f }, m_Texture);
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.8f, 0.8f }, m_Color);
+	Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, m_Texture);
 	Hazel::Renderer2D::EndScene();
 }
 
