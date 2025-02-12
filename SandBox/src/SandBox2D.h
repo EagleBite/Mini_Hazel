@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hazel.h"
+#include "ParticleSystem.h"
 
 class SandBox2D : public Hazel::Layer
 {
@@ -19,4 +20,7 @@ private:
 
 	Hazel::OrthographicsCameraController m_CameraController;
 	Hazel::Ref<Hazel::Texture2D> m_Texture;
+
+	ParticleProps m_Particle;
+	ParticleSystem m_ParticleSystem;
 };

@@ -9,6 +9,15 @@
 
 namespace Hazel
 {
+	struct OrthographicsCameraBounds
+	{
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() { return Right - Left; }
+		float GetHeight() { return Top - Bottom; }
+	};
+
 	// 正交摄像机控制器
 	class OrthographicsCameraController
 	{
@@ -20,6 +29,8 @@ namespace Hazel
 
 		OrthoGraphicsCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicsCamera& GetCamera() const { return m_Camera; }
+
+		const OrthographicsCameraBounds GetBounds() { return m_Bounds; }
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
@@ -28,10 +39,11 @@ namespace Hazel
 		float m_AspectRatio;       // 长宽比
 		float m_ZoomLevel = 1.0f;  // 缩放
 		OrthoGraphicsCamera m_Camera;
+		OrthographicsCameraBounds m_Bounds;
 
 		glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
 		float m_CameraRotation = 0.0f;
-		float m_CameraMoveSpeed = 0.5f;
+		float m_CameraMoveSpeed = 5.0f;
 		float m_CameraRotationSpeed = 30.0f;
 	};
 
