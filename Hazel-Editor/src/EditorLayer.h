@@ -21,15 +21,17 @@ namespace Hazel
 		Ref<FrameBuffer> m_FrameBuffer; // 帧缓冲
 		glm::vec2 m_ViewportSize;
 
-		bool m_ViewportFocused;
-		bool m_ViewportHovered;
+		bool m_ViewportFocused = false;
+		bool m_ViewportHovered = false;
+
+		Ref<Scene> m_ActiveScene;
 
 		// 暂时的纹理数据
-		Ref<Texture2D> m_Texture;
-		Ref<Texture2D> m_SpriteSheet; // 精灵图
-		Ref<SubTexture2D> m_TextureStair;
-		Ref<SubTexture2D> m_TextureBush;
-		Ref<SubTexture2D> m_TextureTree;
+		//Ref<Texture2D> m_Texture;
+		//Ref<Texture2D> m_SpriteSheet; // 精灵图
+		//Ref<SubTexture2D> m_TextureStair;
+		//Ref<SubTexture2D> m_TextureBush;
+		//Ref<SubTexture2D> m_TextureTree;
 
 		
 	};

@@ -25,3 +25,6 @@
 #include "Hazel/Renderer/OrthoGraphicsCamera.h"
 #include "Hazel/Renderer/OrthographicsCameraController.h"
 #include "Hazel/Renderer/PerspectiveGraphicsCamera.h"
+
+#include "Hazel/Scene/Scene.h"
+#include "Hazel/Scene/Components.h"

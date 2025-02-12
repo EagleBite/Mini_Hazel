@@ -13,17 +13,14 @@ namespace Hazel
 	void EditorLayer::OnAttach()
 	{
 		Renderer2D::Init();
-		m_Texture = Texture2D::Create("./assets/textures/directions.png");
-		// 精灵图SpriteSheet
-		m_SpriteSheet = Texture2D::Create("./assets/textures/SpriteSheet.png");
-		m_TextureStair = SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7, 6 }, { 128, 128 });
-		m_TextureBush = SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2, 3 }, { 128, 128 });
-		m_TextureTree = SubTexture2D::CreateFromCoords(m_SpriteSheet, { 4, 1 }, { 128, 128 }, { 1,2 });
+
 		// 帧缓冲
 		FrameBufferSpecification spec;
 		spec.Width = 1280;
 		spec.Height = 720;
 		m_FrameBuffer = FrameBuffer::Create(spec);
+
+		m_ActiveScene = CreateRef<Scene>();
 	}
 
 	void EditorLayer::OnDetach()
@@ -51,17 +48,15 @@ namespace Hazel
 		int count = 10; // 每行/列渲染的 Quad 数量（总计 100 * 100 = 10000 个）
 		for (int x = 0; x < count; x++) {
 			for (int y = 0; y < count; y++) {
-				// 计算每个 Quad 的位置
 				glm::vec2 position = { x * (0.8f + spacing), y * (0.8f + spacing) };
-
-				if ((x + y) % 2 == 0) {
-					Renderer2D::DrawQuad(position, { 0.8f, 0.8f }, m_TextureTree);
-				}
-				else {
-					Renderer2D::DrawQuad(position, { 0.8f, 0.8f }, m_Texture);
-				}
+				Renderer2D::DrawQuad(position, { 0.8f, 0.8f }, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 			}
 		}
+
+		auto square = m_ActiveScene->CreateEntity();
+		square.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		m_ActiveScene->OnUpdate(ts);
+
 		Renderer2D::EndScene();
 
 		m_FrameBuffer->UnBind();

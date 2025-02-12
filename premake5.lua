@@ -50,7 +50,8 @@ project "Hazel"
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 		"%{prj.name}/vendor/stb_image/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.h"
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/entt/**.hpp"
 	}
 
 	defines{
@@ -187,7 +188,8 @@ project "Hazel-Editor"
 		"Hazel/src",
 		"Hazel/vendor",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links {
