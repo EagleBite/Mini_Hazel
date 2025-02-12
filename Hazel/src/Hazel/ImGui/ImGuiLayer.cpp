@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Hazel/Core/Core.h"
+#include "hazel/Core/Log.h"
 #include "Hazel/Core/Application.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
 
@@ -90,4 +91,15 @@ namespace Hazel
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);// 当前OnImGuiRender层显示DemoUI窗口
 	}
+
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if (m_BlockEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.SetHandled(event.IsInCategory(EventCategoryMouse) && io.WantCaptureMouse);
+			event.SetHandled(event.IsInCategory(EventCategoryKeyboard) && io.WantCaptureKeyboard);
+		}
+	}
+
 }

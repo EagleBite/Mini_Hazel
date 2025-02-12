@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Hazel/Core/Core.h"
+#include "Hazel/Core/Log.h"
 #include <string>
 #include <functional>
 #include <ostream>
@@ -45,6 +46,10 @@ namespace Hazel
 		virtual const char* GetName() const = 0;     // 获取事件的名称，所有事件类必须实现这个方法
 		virtual std::string ToString() const { return GetName(); }  // 返回事件的字符串表示（默认返回事件名称）
 		inline bool IsHandled() const { return m_Handled; }
+		inline void SetHandled(const bool handled) { m_Handled |= handled; }
+		bool IsInCategory(EventCategory category) const {
+			return GetCategoryFlags() & category;  // 注意:一个时间可以属于多种类型
+		};
 	protected:
 		bool m_Handled = false;
 	};

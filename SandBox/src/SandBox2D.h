@@ -26,6 +26,8 @@ private:
 	Hazel::Ref<Hazel::SubTexture2D> m_TextureBush;
 	Hazel::Ref<Hazel::SubTexture2D> m_TextureTree;
 
+	Hazel::Ref<Hazel::FrameBuffer> m_FrameBuffer; // Ö¡»º³å
+
 	ParticleProps m_Particle;
 	ParticleSystem m_ParticleSystem;
 };

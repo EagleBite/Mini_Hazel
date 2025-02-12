@@ -28,6 +28,11 @@ void SandBox2D::OnAttach()
 	m_TextureStair = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7, 6 }, { 128, 128 });
 	m_TextureBush = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2, 3 }, { 128, 128 });
 	m_TextureTree = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 4, 1 }, { 128, 128 }, { 1,2 });
+	// 帧缓冲
+	Hazel::FrameBufferSpecification spec;
+	spec.Width = 1280;
+	spec.Height = 720;
+	m_FrameBuffer = Hazel::FrameBuffer::Create(spec);
 }
 
 void SandBox2D::OnDetach()
@@ -37,9 +42,11 @@ void SandBox2D::OnDetach()
 
 void SandBox2D::OnUpdate(Hazel::Timestep ts)
 {
+	m_CameraController.OnUpdate(ts);
+
 	Hazel::Renderer2D::ResetStats();
 
-	m_CameraController.OnUpdate(ts);
+	m_FrameBuffer->Bind();
 
 	Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 	Hazel::RenderCommand::Clear();
@@ -80,6 +87,8 @@ void SandBox2D::OnUpdate(Hazel::Timestep ts)
 		}
 	}
 	Hazel::Renderer2D::EndScene();
+
+	m_FrameBuffer->UnBind();
 }
 
 void SandBox2D::OnEvent(Hazel::Event& event)
@@ -89,15 +98,76 @@ void SandBox2D::OnEvent(Hazel::Event& event)
 
 void SandBox2D::OnImGuiRender()
 {
-	ImGui::Begin("Settings");
+	// 启用 ImGui 窗口标志，允许 Docking
+	static bool dockspaceOpen = true;
+	static bool opt_fullscreen = true;
+	static bool opt_padding = false;
+	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	if (opt_fullscreen)
+	{
+		// 获取主窗口大小
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	}
+
+	if (!opt_padding)
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+	// 创建 DockSpace 需要的窗口
+	ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+
+	if (!opt_padding)
+		ImGui::PopStyleVar();
+
+	if (opt_fullscreen)
+		ImGui::PopStyleVar(2);
+
+	// 创建 DockSpace
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	{
+		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	}
+
+	// 创建菜单栏
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Options"))
+		{
+			ImGui::MenuItem("Full Screen", NULL, &opt_fullscreen);
+			ImGui::MenuItem("Padding", NULL, &opt_padding);
+			ImGui::Separator();
+			if (ImGui::MenuItem("Close", NULL, false))
+				dockspaceOpen = false;
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	ImGui::End();
+
+	// 设置窗口内容
+	ImGui::Begin("Settings");
 	auto stats = Hazel::Renderer2D::GetStats();
-	ImGui::Text("Renderer2D Statics");
+	ImGui::Text("Renderer2D Statistics");
 	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 	ImGui::Text("Quads: %d", stats.QuadCount);
 	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
 	ImGui::ColorEdit4("m_Color", glm::value_ptr(m_Color));
+
+	uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
+	ImGui::Image((void*)textureID, ImVec2(1280, 720), ImVec2(0, 1), ImVec2(1, 0));
+
 	ImGui::End();
 }

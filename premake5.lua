@@ -6,7 +6,7 @@ workspace "Hazel"
 		"Dist"
 	}
 
-	startproject "SandBox" -- 设置启动项目
+	startproject "Hazel-Editor" -- 设置启动项目
 
 
 -- 输出路径:Debug-windows-x64
@@ -113,6 +113,62 @@ project "Hazel"
 
 project "SandBox"
 	location "SandBox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"	
+
+	targetdir("bin/" .. outputdir .. "/%{prj.name}")
+	objdir("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs {
+		"Hazel/src",
+		"Hazel/vendor",
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.glm}"
+	}
+
+	links {
+		"Hazel"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+		buildoptions { "/utf-8" }
+
+		defines {
+			"HZ_PLATFORM_WINDOWS"
+		}
+
+	 -- 针对 Visual Studio 禁用警告 C4828
+    filter { "action:vs*" }
+        buildoptions { "/wd4828" }  -- 添加禁用特定警告的选项
+
+	-- 不同配置下的预定义不同
+	filter "configurations:Debug"
+		defines "HZ_DEBUG"
+		runtime "Debug"
+		symbols "On"
+
+	filter "configurations:Release"
+		defines "HZ_RELEASE"
+		runtime "Release"
+		optimize "On"
+
+	filter "configurations:Dist"
+		defines "HZ_DIST"
+		runtime "Release"
+		optimize "On"
+
+
+project "Hazel-Editor"
+	location "Hazel-Editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
