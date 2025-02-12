@@ -7,6 +7,7 @@ SandBox2D::SandBox2D() :
 	m_CameraController(1280.f / 720.f),
 	m_ParticleSystem(1000)
 {
+	// 粒子系统参数
 	m_Particle.Position = { 0.0f, 0.0f };
 	m_Particle.Velocity = { 0.0f, 1.0f };
 	m_Particle.VelocityVariation = { 0.5f, 0.5f };
@@ -21,7 +22,12 @@ SandBox2D::SandBox2D() :
 void SandBox2D::OnAttach()
 {
 	Hazel::Renderer2D::Init();
-	m_Texture = Hazel::Texture2D::Create("assets/textures/directions.png");
+	m_Texture = Hazel::Texture2D::Create("./assets/textures/directions.png");
+	// 精灵图SpriteSheet
+	m_SpriteSheet = Hazel::Texture2D::Create("./assets/textures/SpriteSheet.png");
+	m_TextureStair = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7, 6 }, { 128, 128 });
+	m_TextureBush = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2, 3 }, { 128, 128 });
+	m_TextureTree = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 4, 1 }, { 128, 128 }, { 1,2 });
 }
 
 void SandBox2D::OnDetach()
@@ -66,7 +72,7 @@ void SandBox2D::OnUpdate(Hazel::Timestep ts)
 			glm::vec2 position = { x * (0.8f + spacing), y * (0.8f + spacing) };
 
 			if ((x + y) % 2 == 0) {
-				Hazel::Renderer2D::DrawQuad(position, { 0.8f, 0.8f }, m_Color);
+				Hazel::Renderer2D::DrawQuad(position, { 0.8f, 0.8f }, m_TextureTree);
 			}
 			else {
 				Hazel::Renderer2D::DrawQuad(position, { 0.8f, 0.8f }, m_Texture);

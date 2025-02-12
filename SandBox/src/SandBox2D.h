@@ -21,6 +21,11 @@ private:
 	Hazel::OrthographicsCameraController m_CameraController;
 	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
+	Hazel::Ref<Hazel::Texture2D> m_SpriteSheet; // ¾«ÁéÍ¼
+	Hazel::Ref<Hazel::SubTexture2D> m_TextureStair;
+	Hazel::Ref<Hazel::SubTexture2D> m_TextureBush;
+	Hazel::Ref<Hazel::SubTexture2D> m_TextureTree;
+
 	ParticleProps m_Particle;
 	ParticleSystem m_ParticleSystem;
 };

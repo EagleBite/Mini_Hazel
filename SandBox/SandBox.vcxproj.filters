@@ -36,4 +36,9 @@
   <ItemGroup>
     <None Include="assets\shaders\SimpleColorTextureShader.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Assets\美术素材\美术素材.library\images\M71F1MZ3NUWE6.info\spritesheet_players.png">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

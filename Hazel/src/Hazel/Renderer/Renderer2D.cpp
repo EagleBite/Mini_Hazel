@@ -363,6 +363,42 @@ namespace Hazel
 		s_Data.Stats.QuadCount++;   // 统计已绘制的 Quad 数量
 	}
 
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture)
+	{
+		DrawQuad({ position.x, position.y, 0.0f }, size, subtexture);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture)
+	{
+		if (s_Data.QuadIndexCount >= Renderer2DStorage::MaxIndices) {
+			FlushAndReset();
+		}
+
+		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		constexpr float tilingFactor = 1.0f;
+
+		const Ref<Texture2D> texture = subtexture->GetTexture();
+		float textureIndex = GetTextureIndex(texture);
+		const glm::vec2* textureCoords = subtexture->GetTexCoords();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+
+		// 顶点循环（左下、右下、右上、左上）
+		for (int i = 0; i < 4; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr++;
+		}
+
+		s_Data.QuadIndexCount += 6;
+		s_Data.Stats.QuadCount++;
+	}
+
 	void Renderer2D::ResetStats()
 	{
 		memset(&s_Data.Stats, 0, sizeof(Statistics));
