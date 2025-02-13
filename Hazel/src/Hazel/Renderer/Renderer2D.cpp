@@ -40,8 +40,6 @@ namespace Hazel
 
 		glm::vec4 QuadVertexPositions[4];
 		Renderer2D::Statistics Stats;
-
-
 	};
 
 	static Renderer2DStorage s_Data;
@@ -118,6 +116,16 @@ namespace Hazel
 	void Renderer2D::BeginScene(const OrthoGraphicsCamera& camera)
 	{
 		s_Data.SimpleColorTextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		s_Data.TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+		s_Data.SimpleColorTextureShader->SetMat4("u_ViewProjection", viewProj);
 
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;

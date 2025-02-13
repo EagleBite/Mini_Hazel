@@ -25,15 +25,8 @@ namespace Hazel
 		bool m_ViewportHovered = false;
 
 		Ref<Scene> m_ActiveScene;
-
-		// 暂时的纹理数据
-		//Ref<Texture2D> m_Texture;
-		//Ref<Texture2D> m_SpriteSheet; // 精灵图
-		//Ref<SubTexture2D> m_TextureStair;
-		//Ref<SubTexture2D> m_TextureBush;
-		//Ref<SubTexture2D> m_TextureTree;
-
-		
+		Entity m_SquareEntity;
+		Entity m_CameraEntity;
 	};
 }
 
