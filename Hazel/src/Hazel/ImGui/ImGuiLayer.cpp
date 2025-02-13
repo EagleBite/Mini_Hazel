@@ -1,9 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Hazel/Core/Core.h"
 #include "hazel/Core/Log.h"
 #include "Hazel/Core/Application.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
 
+#include <filesystem>
 #include "imgui.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -34,6 +35,32 @@ namespace Hazel
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+
+		// 加载支持中文的字体
+		io.Fonts->Clear(); // 清除默认字体
+		const char* fontPath = "./assets/fonts/AaGuShiHui-2.ttf";
+		if (std::filesystem::exists(fontPath)) {
+			HZ_CORE_INFO("Font file exists: {}", fontPath);
+		}
+		else {
+			HZ_CORE_ERROR("Font file NOT found: {}", fontPath);
+		}
+		io.Fonts->AddFontDefault();
+		ImFont* font = io.Fonts->AddFontFromFileTTF(fontPath, 24.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+		if (!font) {
+			HZ_CORE_ERROR("Failed to load font: {}", fontPath);
+		}
+		else {
+			HZ_CORE_INFO("Font loaded successfully: {}", fontPath);
+			io.FontDefault = font;
+		}
+		io.Fonts->Build(); // 构建字体纹理
+		if (!io.Fonts->IsBuilt()) {
+			HZ_CORE_ERROR("Font Atlas not built!");
+		}
+		else {
+			HZ_CORE_INFO("Font Atlas built successfully!");
+		} 
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
@@ -88,8 +115,8 @@ namespace Hazel
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);// ��ǰOnImGuiRender����ʾDemoUI����
+		//static bool show = true;
+		//ImGui::ShowDemoWindow(&show);// 当前OnImGuiRender层显示DemoUI窗口
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)

@@ -41,6 +41,7 @@ namespace Hazel
 		}
 
 		operator bool() const { return m_EntityHandle != entt::null; }
+		Scene* GetScene() { return m_Scene; }
 	private:
 		// The unique identifier for the entity in the registry.
 		entt::entity m_EntityHandle{ entt::null };

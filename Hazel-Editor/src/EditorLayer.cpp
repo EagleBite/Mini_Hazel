@@ -4,14 +4,15 @@
 
 namespace Hazel
 {
+	// åœºæ™¯æ‘„åƒæœºæ§åˆ¶å™¨
 	class CameraController : public ScriptableEntity
 	{
 	public:
 		virtual void OnCreate() override {};
-		virtual void OnDestroy() override  {};
+		virtual void OnDestroy() override {};
 		virtual void OnUpdate(Timestep ts) override
 		{
-			auto& transform = GetComponent<TransformComponent>().Transform;
+			auto &transform = GetComponent<TransformComponent>().Transform;
 			float speed = 5.0f;
 
 			if (Input::IsKeyPressed(HZ_KEY_A))
@@ -25,17 +26,17 @@ namespace Hazel
 		}
 	};
 
-	EditorLayer::EditorLayer() :
-		Layer("EditorLayer"),
+	EditorLayer::EditorLayer() : 
+		Layer("EditorLayer"), 
 		m_CameraController(1280.f / 720.f)
 	{
 	}
 
 	void EditorLayer::OnAttach()
 	{
-		Renderer2D::Init();
+		Renderer2D::Init(); // æ¸²æŸ“å™¨åˆå§‹åŒ–
 
-		// Ö¡»º³å
+		// åˆ›å»ºå¸§ç¼“å†² -- å­˜å‚¨æ¸²æŸ“ç»“æœ
 		FrameBufferSpecification spec;
 		spec.Width = 1280;
 		spec.Height = 720;
@@ -54,14 +55,16 @@ namespace Hazel
 
 	void EditorLayer::OnDetach()
 	{
-
 	}
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		if (m_ViewportFocused)
+		{
 			m_CameraController.OnUpdate(ts);
+		}
 
+		// ViewPortå¤§å°å˜åŒ–è°ƒæ•´
 		FrameBufferSpecification spec = m_FrameBuffer->GetSpecification();
 		if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
@@ -71,27 +74,26 @@ namespace Hazel
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-		Renderer2D::ResetStats(); // ÖØÖÃäÖÈ¾Êı¾İ
+		Renderer2D::ResetStats(); // é‡ç½®æ¸²æŸ“æ•°æ®
 
 		m_FrameBuffer->Bind();
 
-		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+		RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
 		RenderCommand::Clear();
 
-		// ¸üĞÂ³¡¾°Scene
-		m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdate(ts); // æ›´æ–°åœºæ™¯Scene
 
 		m_FrameBuffer->UnBind();
 	}
 
-	void EditorLayer::OnEvent(Event& event)
+	void EditorLayer::OnEvent(Event &event)
 	{
 		m_CameraController.OnEvent(event);
 	}
 
 	void EditorLayer::OnImGuiRender()
 	{
-		// ÆôÓÃ ImGui ´°¿Ú±êÖ¾£¬ÔÊĞí Docking
+		// å¯ç”¨ ImGui çª—å£æ ‡å¿—ï¼Œå…è®¸ Docking
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
@@ -100,8 +102,8 @@ namespace Hazel
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
 		{
-			// »ñÈ¡Ö÷´°¿Ú´óĞ¡
-			const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			// è·å–ä¸»çª—å£å¤§å°
+			const ImGuiViewport *viewport = ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->Pos);
 			ImGui::SetNextWindowSize(viewport->Size);
 			ImGui::SetNextWindowViewport(viewport->ID);
@@ -114,7 +116,7 @@ namespace Hazel
 		if (!opt_padding)
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-		// ´´½¨ DockSpace ĞèÒªµÄ´°¿Ú
+		// åˆ›å»º DockSpace éœ€è¦çš„çª—å£
 		ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
 
 		if (!opt_padding)
@@ -123,35 +125,37 @@ namespace Hazel
 		if (opt_fullscreen)
 			ImGui::PopStyleVar(2);
 
-		// ´´½¨ DockSpace
-		ImGuiIO& io = ImGui::GetIO();
+		// åˆ›å»º DockSpace
+		ImGuiIO &io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 
-		// ´´½¨²Ëµ¥À¸
+		// åˆ›å»ºèœå•æ 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu("é€‰é¡¹"))
 			{
-				ImGui::MenuItem("Full Screen", NULL, &opt_fullscreen);
-				ImGui::MenuItem("Padding", NULL, &opt_padding);
+				ImGui::MenuItem("å…¨å±", NULL, &opt_fullscreen);
+				ImGui::MenuItem("å†…è¾¹è·", NULL, &opt_padding);
 				ImGui::Separator();
-				if (ImGui::MenuItem("Close", NULL, false))
+				if (ImGui::MenuItem("å…³é—­", NULL, false))
 					dockspaceOpen = false;
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
 		}
 
+
 		ImGui::End();
 
-		// ÉèÖÃ´°¿ÚÄÚÈİ
-		ImGui::Begin("Settings");
+		// è®¾ç½®çª—å£å†…å®¹
+		ImGui::Begin("è®¾ç½®");
+
 		auto stats = Renderer2D::GetStats();
-		ImGui::Text("Renderer2D Statistics");
+		ImGui::Text("Renderer2D æ•°æ®");
 		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 		ImGui::Text("Quads: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
@@ -160,31 +164,30 @@ namespace Hazel
 		if (m_SquareEntity)
 		{
 			ImGui::Separator();
-			auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+			auto &squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
 			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
 			ImGui::Separator();
 		}
 
-		// ¾ØÕóµÄµÚËÄÁĞ
-		auto& cameraTransform = m_CameraEntity.GetComponent<TransformComponent>().Transform[3];
+		// çŸ©é˜µçš„ç¬¬å››åˆ—
+		auto &cameraTransform = m_CameraEntity.GetComponent<TransformComponent>().Transform[3];
 		ImGui::DragFloat3("Camera Transform", glm::value_ptr(cameraTransform));
 
 		ImGui::End();
 
+		ImGui::Begin("æ¸¸æˆåœºæ™¯");
 
-		ImGui::Begin("ViewPort");
-
-		m_ViewportFocused = ImGui::IsWindowFocused(); // Êó±ê¾Û½¹
-		m_ViewportHovered = ImGui::IsWindowHovered(); // Êó±êĞüÍ£
+		m_ViewportFocused = ImGui::IsWindowFocused(); // é¼ æ ‡èšç„¦
+		m_ViewportHovered = ImGui::IsWindowHovered(); // é¼ æ ‡æ‚¬åœ
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize)) // ¸Ä±äÁË´°¿Ú´óĞ¡
-		{ 
-			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+		if (m_ViewportSize != *((glm::vec2 *)&viewportPanelSize)) // æ”¹å˜äº†çª—å£å¤§å°
+		{
+			m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
 		}
 		uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((void *)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 		ImGui::End();
 

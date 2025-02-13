@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Hazel/Core/Core.h"
 
@@ -8,19 +8,19 @@ extern Hazel::Application* Hazel::CreateApplication();
 
 int main(int argc, char** argv)
  {
-	// ³õÊ¼»¯ÈÕÖ¾ÏµÍ³
+	// åˆå§‹åŒ–æ—¥å¿—ç³»ç»Ÿ
 	Hazel::Log::Init();
 	HZ_CORE_INFO("Logger initialized");
 
-	// ´´½¨Ó¦ÓÃÊµÀý
+	// åˆ›å»ºåº”ç”¨å®žä¾‹
 	HZ_CORE_INFO("Creating application...");
 	auto app = Hazel::CreateApplication();
 
-	// ÔËÐÐÓ¦ÓÃ
+	// è¿è¡Œåº”ç”¨
 	HZ_CORE_INFO("Running application...");
 	app->Run();
 
-	// É¾³ýÓ¦ÓÃÊµÀý
+	// åˆ é™¤åº”ç”¨å®žä¾‹
 	HZ_CORE_INFO("Deleting application...");
 	delete app;
 

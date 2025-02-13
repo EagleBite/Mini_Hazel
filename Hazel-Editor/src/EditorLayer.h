@@ -16,10 +16,12 @@ namespace Hazel
 		virtual void OnEvent(Event& event) override;
 		virtual void OnImGuiRender() override;
 
+		bool IsViewportFocused() const { return m_ViewportFocused; }
+		bool IsViewportHovered() const { return m_ViewportHovered; }
 	private:
-		OrthographicsCameraController m_CameraController;
+		OrthographicsCameraController m_CameraController; // Õý½»ÉãÏñ»ú¿ØÖÆÆ÷
 		Ref<FrameBuffer> m_FrameBuffer; // Ö¡»º³å
-		glm::vec2 m_ViewportSize;
+		glm::vec2 m_ViewportSize = glm::vec2(0.0f);
 
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
