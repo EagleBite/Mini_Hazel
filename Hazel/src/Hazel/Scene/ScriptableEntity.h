@@ -20,7 +20,7 @@ namespace Hazel
 			return m_Entity.GetComponent<T>();
 		}
 
-	private:
+	protected:
 		Entity m_Entity;
 	};
 }

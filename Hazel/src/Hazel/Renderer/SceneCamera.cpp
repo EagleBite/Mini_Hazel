@@ -6,7 +6,8 @@
 
 namespace Hazel
 {
-	SceneCamera::SceneCamera()
+	SceneCamera::SceneCamera(ProjectionType type /*= ProjectionType::Perspective*/)
+		: m_ProjectionType(type)
 	{
 		RecalculateProjection();
 	}
@@ -25,16 +26,35 @@ namespace Hazel
 		RecalculateProjection();
 	}
 
+	/*
+	* 备注: 传递的fov参数是角度制 计算使用的弧度制
+	*/
+	void SceneCamera::SetPerspective(float fov, float nearClip, float farClip)
+	{
+		m_PerspectiveFOV = glm::radians(fov);  // 将角度转换为弧度
+		m_PerspectiveNear = nearClip;
+		m_PerspectiveFar = farClip;
+		RecalculateProjection();
+	}
+
 	void SceneCamera::RecalculateProjection()
 	{
-		// TODO:根据摄像机类型进行投影矩阵的计算
-		float orthoLeft = -m_OrthographicSize * m_AspectRatio * 0.5f;
-		float orthoRight = m_OrthographicSize * m_AspectRatio * 0.5f;
-		float orthoBottom = -m_OrthographicSize * 0.5f;
-		float orthoTop = m_OrthographicSize * 0.5f;
-
-		m_Projection = glm::ortho(orthoLeft, orthoRight, orthoBottom,
-			orthoTop, m_OrthographicNear, m_OrthographicFar);
+		if (m_ProjectionType == ProjectionType::Orthographic)
+		{
+			// 正交投影矩阵
+			m_ProjectionMatrix = glm::ortho(
+				-m_OrthographicSize * m_AspectRatio, m_OrthographicSize * m_AspectRatio,
+				-m_OrthographicSize, m_OrthographicSize,
+				m_OrthographicNear, m_OrthographicFar
+			);
+		}
+		else
+		{
+			// 透视投影矩阵
+			m_ProjectionMatrix = glm::perspective(
+				m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar
+			);
+		}
 	}
 
 }

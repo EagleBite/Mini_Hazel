@@ -12,17 +12,19 @@ namespace Hazel
 		virtual void OnDestroy() override {};
 		virtual void OnUpdate(Timestep ts) override
 		{
-			auto &transform = GetComponent<TransformComponent>().Transform;
+			auto &translation = GetComponent<TransformComponent>().Translation;
 			float speed = 5.0f;
 
-			if (Input::IsKeyPressed(HZ_KEY_A))
-				transform[3][0] -= speed * ts;
-			if (Input::IsKeyPressed(HZ_KEY_D))
-				transform[3][0] += speed * ts;
-			if (Input::IsKeyPressed(HZ_KEY_W))
-				transform[3][1] += speed * ts;
-			if (Input::IsKeyPressed(HZ_KEY_S))
-				transform[3][1] -= speed * ts;
+			if (m_Entity.GetScene()->IsViewportFocused()) {
+				if (Input::IsKeyPressed(HZ_KEY_A))
+					translation[0] -= speed * ts;
+				if (Input::IsKeyPressed(HZ_KEY_D))
+					translation[0] += speed * ts;
+				if (Input::IsKeyPressed(HZ_KEY_W))
+					translation[1] += speed * ts;
+				if (Input::IsKeyPressed(HZ_KEY_S))
+					translation[1] -= speed * ts;
+			}
 		}
 	};
 
@@ -169,16 +171,14 @@ namespace Hazel
 			ImGui::Separator();
 		}
 
-		// 矩阵的第四列
-		auto &cameraTransform = m_CameraEntity.GetComponent<TransformComponent>().Transform[3];
-		ImGui::DragFloat3("Camera Transform", glm::value_ptr(cameraTransform));
-
 		ImGui::End();
 
 		ImGui::Begin("游戏场景");
 
 		m_ViewportFocused = ImGui::IsWindowFocused(); // 鼠标聚焦
 		m_ViewportHovered = ImGui::IsWindowHovered(); // 鼠标悬停
+		m_ActiveScene->SetViewportFocused(m_ViewportFocused);
+		m_ActiveScene->SetViewportHovered(m_ViewportHovered);
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -191,6 +191,7 @@ namespace Hazel
 
 		ImGui::End();
 
+		// 场景层次面板
 		m_SceneHierarchyPanel->OnImGuiRender();
 	}
 }

@@ -47,7 +47,7 @@ namespace Hazel
 			if (camera.isPrimary)
 			{
 				mainCamera = &camera.camera;
-				cameraTransform = &transform.Transform;
+				cameraTransform = &transform.GetTransformMatrix();
 				break;
 			}
 		}
@@ -58,7 +58,7 @@ namespace Hazel
 
 			auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
 			view.each([](auto entity, TransformComponent& transform, SpriteRendererComponent& sprite) {
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				Renderer2D::DrawQuad(transform.GetTransformMatrix(), sprite.Color);
 				});
 
 			Renderer2D::EndScene();

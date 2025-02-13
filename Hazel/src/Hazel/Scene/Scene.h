@@ -26,9 +26,16 @@ namespace Hazel
 
 		Entity CreateEntity(const std::string& name);
 
+		void SetViewportFocused(bool condition) { m_ViewportFocused = condition; }
+		void SetViewportHovered(bool condition) { m_ViewportHovered = condition; }
+		bool IsViewportFocused() const { return m_ViewportFocused; }
+		bool IsViewportHovered() const { return m_ViewportHovered; }
 	private:
 		entt::registry m_Registry;
 		uint32_t m_ViewportWidth;
 		uint32_t m_ViewportHeight;
+
+		bool m_ViewportFocused = false;
+		bool m_ViewportHovered = false;
 	};
 }
