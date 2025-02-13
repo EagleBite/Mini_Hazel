@@ -7,9 +7,9 @@ namespace Hazel
 	class CameraController : public ScriptableEntity
 	{
 	public:
-		void OnCreate() {};
-		void OnDestroy() {};
-		void OnUpdate(Timestep ts)
+		virtual void OnCreate() override {};
+		virtual void OnDestroy() override  {};
+		virtual void OnUpdate(Timestep ts) override
 		{
 			auto& transform = GetComponent<TransformComponent>().Transform;
 			float speed = 5.0f;
@@ -42,11 +42,12 @@ namespace Hazel
 		m_FrameBuffer = FrameBuffer::Create(spec);
 
 		m_ActiveScene = CreateRef<Scene>();
+		m_SceneHierarchyPanel = CreateRef<SceneHierarchyPanel>(m_ActiveScene);
 
-		m_SquareEntity = m_ActiveScene->CreateEntity();
+		m_SquareEntity = m_ActiveScene->CreateEntity("Square Entity");
 		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-		m_CameraEntity = m_ActiveScene->CreateEntity();
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
 		m_CameraEntity.AddComponent<CameraComponent>();
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
@@ -186,5 +187,7 @@ namespace Hazel
 		ImGui::Image((void*)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 		ImGui::End();
+
+		m_SceneHierarchyPanel->OnImGuiRender();
 	}
 }

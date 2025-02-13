@@ -9,6 +9,11 @@ namespace Hazel
 	{
 		friend class Scene;
 	public:
+		virtual ~ScriptableEntity() {}
+		virtual void OnCreate() {}
+		virtual void OnDestroy() {}
+		virtual void OnUpdate(Timestep ts) {}
+
 		template<typename T>
 		T& GetComponent()
 		{

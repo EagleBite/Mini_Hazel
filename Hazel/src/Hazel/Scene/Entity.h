@@ -40,7 +40,7 @@ namespace Hazel
 			return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
 		}
 
-		operator bool() const { return (uint32_t)m_EntityHandle != 0; }
+		operator bool() const { return m_EntityHandle != entt::null; }
 	private:
 		// The unique identifier for the entity in the registry.
 		entt::entity m_EntityHandle{ entt::null };

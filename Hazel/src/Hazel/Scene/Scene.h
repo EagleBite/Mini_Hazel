@@ -3,13 +3,15 @@
 #include "entt.hpp"
 #include "Hazel/Scene/Entity.h"
 #include "Hazel/Core/TimeStep.h"
+#include <string>
 
 namespace Hazel
 {
 	class Entity;
 	class Scene
 	{
-		friend class Entity; // сят╙
+		friend class Entity;
+		friend class SceneHierarchyPanel;
 	public:
 		Scene();
 		~Scene();
@@ -22,7 +24,7 @@ namespace Hazel
 
 		entt::registry& Reg() { return m_Registry; }
 
-		Entity CreateEntity();
+		Entity CreateEntity(const std::string& name);
 
 	private:
 		entt::registry m_Registry;

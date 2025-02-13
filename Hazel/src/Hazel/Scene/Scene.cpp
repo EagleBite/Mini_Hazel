@@ -78,9 +78,10 @@ namespace Hazel
 			});
 	}
 
-	Entity Scene::CreateEntity()
+	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity entity = { m_Registry.create(),this };
+		entity.AddComponent<TagComponent>(name);
 		entity.AddComponent<TransformComponent>();
 		return entity;
 	}
